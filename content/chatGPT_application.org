@@ -2,6 +2,8 @@
 :ID:       4131562b-d6de-4905-8073-2f77a49f6ef3
 :END:
 #+title: #+title: chatGPT_application
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
 
 
 * AI 활용분야
