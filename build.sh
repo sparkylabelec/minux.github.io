@@ -1,3 +1,3 @@
 #!/bin/sh
-# repo 4
-emacs-nox -Q --script build-site.el
+# repo 6
+emacs -Q --script build-site.el
