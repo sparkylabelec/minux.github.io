@@ -21,14 +21,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgde04f7c">Overview</a></li>
-<li><a href="#org830cf05">Links</a></li>
+<li><a href="#orgc825f14">Overview</a></li>
+<li><a href="#org491f419">Links</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgde04f7c" class="outline-2">
-<h2 id="orgde04f7c">Overview</h2>
-<div class="outline-text-2" id="text-orgde04f7c">
+<div id="outline-container-orgc825f14" class="outline-2">
+<h2 id="orgc825f14">Overview</h2>
+<div class="outline-text-2" id="text-orgc825f14">
 <p>
 This is an <b>example</b> of a <span class="underline">website</span> written with <a href="https://orgmode.org">Org Mode</a>!
 </p>
@@ -43,12 +43,11 @@ My name is minwook han
 </div>
 </div>
 
-<div id="outline-container-org830cf05" class="outline-2">
-<h2 id="org830cf05">Links</h2>
-<div class="outline-text-2" id="text-org830cf05">
+<div id="outline-container-org491f419" class="outline-2">
+<h2 id="org491f419">Links</h2>
+<div class="outline-text-2" id="text-org491f419">
 <ul class="org-ul">
-<li><a href="https://systemcrafters.net">System Crafters Official Site</a></li>
-<li><a href="https://youtube.com/SystemCrafters">System Crafters on YouTube</a></li>
+<li><a href="multi_concurreny.html">multi concurrency python</a></li>
 <li><a href="chatGPT_application.html">chatGPT</a></li>
 </ul>
 </div>

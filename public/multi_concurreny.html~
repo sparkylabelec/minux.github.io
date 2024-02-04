@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concurreny Python</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://fniessen.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Concurreny Python</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgd29534b">Speed it up</a>
+<ul>
+<li><a href="#orgf852039">What is Thread</a>
+<ul>
+<li><a href="#org13e33da">Types of Thread</a></li>
+<li><a href="#orgce7170a">What is multithreading</a></li>
+</ul>
+</li>
+<li><a href="#org7679836">Process</a>
+<ul>
+<li><a href="#org0705813">Properties of Processe</a></li>
+<li><a href="#orgb9d2c72">프로세스 의 장점</a></li>
+<li><a href="#org0ff92eb">프로세스의 단점</a></li>
+</ul>
+</li>
+<li><a href="#orga160ef9">Multi Processing</a>
+<ul>
+<li><a href="#orgb4df553">GPU</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org91cbe87">Parallelize it</a>
+<ul>
+<li><a href="#org9d9b144">Understanding concurrency</a>
+<ul>
+<li><a href="#org35b2e51">Propertyof concurrnet systems</a></li>
+</ul>
+</li>
+<li><a href="#org6d854a6">I/O Bottle necks</a></li>
+<li><a href="#orge731f35">System architecture styles</a></li>
+<li><a href="#orgdff574b">Computer Memory architecture styles</a></li>
+</ul>
+</li>
+<li><a href="#orgaae047f">Life of a Thread</a>
+<ul>
+<li><a href="#org6729658">Python example of thread</a></li>
+<li><a href="#org77ac004">The Way of start a thread</a>
+<ul>
+<li><a href="#org947afeb">Starting a thread</a></li>
+<li><a href="#orgc89957e">클래스에서 상속 받기</a></li>
+<li><a href="#org8934ea6">Forking</a></li>
+<li><a href="#org8501808">Daemonizing a thread</a></li>
+</ul>
+</li>
+<li><a href="#orgf53dd94">Handling threads in Python</a>
+<ul>
+<li><a href="#org67b9f25">Starting loads of threads</a></li>
+<li><a href="#orga02c88a">Getting the total number of active threads</a></li>
+<li><a href="#org970418c">Getting the current thread</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org8dfbc76">Syncronization between Threads</a>
+<ul>
+<li><a href="#orge26e9e0">The dining</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgd29534b" class="outline-2">
+<h2 id="orgd29534b">Speed it up</h2>
+<div class="outline-text-2" id="text-orgd29534b">
+</div>
+<div id="outline-container-orgf852039" class="outline-3">
+<h3 id="orgf852039">What is Thread</h3>
+<div class="outline-text-3" id="text-orgf852039">
+<ul class="org-ul">
+<li>OS에 의해 스케쥴링 되는 인스트럭션의 스트림</li>
+<li>프로세서가 할당하는 가장 작은 실행 단위</li>
+<li>메모리사용을 서로 공유하지만 쓰레드 실행 순서는 어떻게 될지 모른다</li>
+</ul>
+</div>
+<div id="outline-container-org13e33da" class="outline-4">
+<h4 id="org13e33da">Types of Thread</h4>
+<div class="outline-text-4" id="text-org13e33da">
+<ul class="org-ul">
+<li>User-level thread: 사용자가 만들고 죽일 수 있는 쓰레드</li>
+<li>Kernel-level thread: OS가 관리  하는 것</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgce7170a" class="outline-4">
+<h4 id="orgce7170a">What is multithreading</h4>
+<div class="outline-text-4" id="text-orgce7170a">
+<ul class="org-ul">
+<li>하나의 프로세서가 여러 작업을 하는 것
+작업간에 Blocking 되는 경우가 많다</li>
+<li>Threading 의 장점
+<ul class="org-ul">
+<li>메모리 사용에서 프로세서들 보다 가볍다</li>
+<li>멀티쓰데드는 I/O Blocking 작업들에서 훌륭한다</li>
+<li>자원을 공유하므로 쓰레드간 공유가 편하다</li>
+</ul></li>
+<li>Threading 의 단점
+<ul class="org-ul">
+<li>Globa interpreter Lock  한계가 있다</li>
+<li>자원공유에서 Race condition이 걸리지 않도록 주의해야 한다</li>
+<li>멀티쓰레드에서 switching context 영향으로 성능이 떨어질 수 있다.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-org7679836" class="outline-3">
+<h3 id="org7679836">Process</h3>
+<div class="outline-text-3" id="text-org7679836">
+<ul class="org-ul">
+<li>CPU의 코어에 해당.</li>
+<li>하나의 프로세스는 메인 쓰레드가 있고 여러 sub-threadygw 만들 수 있다</li>
+<li>각 프로세스는 각자 고유의 자원을 갖는다.</li>
+<li>프로세스가 많아지면 Inter Process Communication(IPC) 문제가 발생 할 수 있다</li>
+</ul>
+</div>
+<div id="outline-container-org0705813" class="outline-4">
+<h4 id="org0705813">Properties of Processe</h4>
+<div class="outline-text-4" id="text-org0705813">
+<ul class="org-ul">
+<li>PID, process group ID, user ID and group ID</li>
+<li>Enviroment, Working dirctory, Program instruction, Regiesters, Stack, Heap</li>
+<li>File descriptors, Signal Actions, Shared libraries, IPC</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgb9d2c72" class="outline-4">
+<h4 id="orgb9d2c72">프로세스 의 장점</h4>
+<div class="outline-text-4" id="text-orgb9d2c72">
+<ul class="org-ul">
+<li>멀티코어에서 더 나은 성능</li>
+<li>CPU 능력이 필요한 작업에 적합</li>
+<li>GIL의 단점을 피할 수 있다</li>
+<li>프로세스가 죽어도 전체 프로그램을 죽이지 않는다</li>
+<li></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org0ff92eb" class="outline-4">
+<h4 id="org0ff92eb">프로세스의 단점</h4>
+<div class="outline-text-4" id="text-org0ff92eb">
+<ul class="org-ul">
+<li>프로세스간 자원 공유가 없다 - IPC로 구현해야  한다</li>
+<li>메모리 사용량이 더 많다</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orga160ef9" class="outline-3">
+<h3 id="orga160ef9">Multi Processing</h3>
+<div class="outline-text-3" id="text-orga160ef9">
+</div>
+<div id="outline-container-orgb4df553" class="outline-4">
+<h4 id="orgb4df553">GPU</h4>
+<div class="outline-text-4" id="text-orgb4df553">
+<ul class="org-ul">
+<li>PyCUDA
+<ul class="org-ul">
+<li>N'vidia's CUDA parallel computation API in Python</li>
+</ul></li>
+<li>OpenCL
+<ul class="org-ul">
+<li>alternative pyCUDA</li>
+<li>Java, dotNet API are also available</li>
+</ul></li>
+<li>Theano
+<ul class="org-ul">
+<li>C implementation</li>
+<li>Theano 로 가는 중간영역에서 파이썬이 쓰임</li>
+</ul></li>
+<li>파이썬의 한계
+<ul class="org-ul">
+<li>Global Inter Lock 현상</li>
+</ul></li>
+<li>Jython
+<ul class="org-ul">
+<li>Java platform 에서 돌아갈수 있는 파이썬</li>
+<li>Java library 쓸 수 있다</li>
+</ul></li>
+<li>IronPython
+<ul class="org-ul">
+<li>dotNet framework에서 돌아가게 만듬</li>
+</ul></li>
+<li></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org91cbe87" class="outline-2">
+<h2 id="org91cbe87">Parallelize it</h2>
+<div class="outline-text-2" id="text-org91cbe87">
+</div>
+<div id="outline-container-org9d9b144" class="outline-3">
+<h3 id="org9d9b144">Understanding concurrency</h3>
+<div class="outline-text-3" id="text-org9d9b144">
+<p>
+Concurrency 는 여러일을 동시에 , 병렬로 하는 것이다. 예상되는 능력이상을 하게 해주며 응용프로그램의 속도를 높여준다
+</p>
+</div>
+<div id="outline-container-org35b2e51" class="outline-4">
+<h4 id="org35b2e51">Propertyof concurrnet systems</h4>
+<div class="outline-text-4" id="text-org35b2e51">
+<ul class="org-ul">
+<li>Multiple actors
+각각의 프로세스와 쓰레드들. 하나의 프로세스는 여러개의 쓰레드를 갖을 수 있다</li>
+<li>Shared Resource
+메모리,디스크나 기타 actors들이 사용하는 자원들</li>
+<li>Rules
+Concurrent System이 따라야 할 규칙들. 언제 actor들이 lock을 획득하고, 메모리에 접근하며 state를 수정 할수 있는지에대한 규칙이다</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6d854a6" class="outline-3">
+<h3 id="org6d854a6">I/O Bottle necks</h3>
+<div class="outline-text-3" id="text-org6d854a6">
+<p>
+컴퓨터가 다양한 입출력을 대기하는 시간이 정보처리를 하는 것 보다 오래 걸리는 현상
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> urllib.request
+<span style="font-weight: bold;">import</span> time
+
+<span style="font-weight: bold; font-style: italic;">t0</span> = time.time()
+<span style="font-weight: bold; font-style: italic;">req</span> = urllib.request.urlopen(<span style="font-style: italic;">"http://www.example.com"</span>)
+<span style="font-weight: bold; font-style: italic;">t1</span> = time.time()
+<span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Total Time to Fetch Page {} Seconds"</span>.<span style="font-weight: bold;">format</span>(t1-t0))
+</pre>
+</div>
+<p>
+사이트 하나 의 시간은 0.5 초 정도이지만 수만개의 사이트 대상일 때는 시간이 많이 늘어난다
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge731f35" class="outline-3">
+<h3 id="orge731f35">System architecture styles</h3>
+<div class="outline-text-3" id="text-orge731f35">
+<ul class="org-ul">
+<li>SISD::Single Instruction streams, Single Data streams</li>
+</ul>
+<p>
+시스템으로 들어가는 하나의 스트림과 하나의 프로세싱 유닛이 사용된다
+-SIMD::single intruction stream , multiple Data streams
+멀티미디어 처리에 최적화,  데이터를 묶음 단위로 한번에 처리
+</p>
+<ul class="org-ul">
+<li>MISD::Multiple instruction streams, single Data stream
+상업적인 실제 모델은 없다.</li>
+<li>MIMD::Multi instruction streams, multiple data streams</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgdff574b" class="outline-3">
+<h3 id="orgdff574b">Computer Memory architecture styles</h3>
+<div class="outline-text-3" id="text-orgdff574b">
+<ul class="org-ul">
+<li>UMA::Uniform Memory
+공유메모리가 프로세싱 코어 수에 상관없이 같은 형태로 사용됨(코어와 메모리 거리에 상관없는구조)
+<ul class="org-ul">
+<li>모든 RAM은 동일한 엑세스 시간이 걸림</li>
+<li>캐시가 고정적이다</li>
+<li>하드웨어 디자인이 간단하다</li>
+<li>메모리 버스가 1개 이므로 Scailing Prolem 이 생긴다.</li>
+</ul></li>
+<li>NUMA::Non-uniform Memory Access
+프로세서와 메모리 거리에 따라 접근 속도가 다르다. 가까운것은 빠르다
+<ul class="org-ul">
+<li>NUMA는 UMA보다 Scailable 하다</li>
+<li>메모리접근속도가 비결정적이다.</li>
+<li>다른 프로세서의 변화를 관찰해야 하므로 프로세서가 많이 사용되면 시간이 증가된다</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgaae047f" class="outline-2">
+<h2 id="orgaae047f">Life of a Thread</h2>
+<div class="outline-text-2" id="text-orgaae047f">
+<ul class="org-ul">
+<li>Thread Construcor의 구조
+<code>def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):</code></li>
+<li>Thread State
+<ul class="org-ul">
+<li>New Thread
+쓰레드가 실행, 자원 할당 전, 그냥 인스턴스 상태</li>
+<li>Runnable
+실행대기 상태, 자원을 할당 받음, 태스크 스케쥴러가 대시 시키는 상태</li>
+<li>Running
+실행되고 있는 상태. 이 상태에서는 Kill 이나 not Running 상태 중 하나가 될 수 있음</li>
+<li>Not-Running 
+I/O 요청, 다른쓰레드 충돌 같은 이유로 실행 중지 상태.</li>
+<li>Dead
+자연사 하거나 사고사 하거나.</li>
+</ul></li>
+</ul>
+</div>
+<div id="outline-container-org6729658" class="outline-3">
+<h3 id="org6729658">Python example of thread</h3>
+<div class="outline-text-3" id="text-org6729658">
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> threading
+<span style="font-weight: bold;">import</span> time
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">threadWorker</span>():
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"My thread has entered 'Running Stat'"</span>)
+    time.sleep(5)
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"My thread is terminating"</span>)
+
+<span style="font-weight: bold; font-style: italic;">myThread</span> = threading.Thread(target=threadWorker)
+myThread.start()
+myThread.join()
+<span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"My thread entered 'DEAD state'"</span>)
+</pre>
+</div>
+<ul class="org-ul">
+<li>myThread = threading.Thread(target=threadWorker)
+<ul class="org-ul">
+<li>Thread instance생성.</li>
+<li>자원 할당이전</li>
+</ul></li>
+<li>myThread.start()
+<ul class="org-ul">
+<li>자원 할당됨</li>
+<li>thread 의 run 함수가 호출되고 runnable 상태됨</li>
+<li>threadWorker안에 time.sleep()같은 대기 문구가 있으면 Not-Running 상태가 되고 다른 쓰레드가 스케쥴링됨</li>
+<li>time.sleep()이 끝나면 worker 프로세스가 끝나므로 Dead상태됨.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org77ac004" class="outline-3">
+<h3 id="org77ac004">The Way of start a thread</h3>
+<div class="outline-text-3" id="text-org77ac004">
+</div>
+<div id="outline-container-org947afeb" class="outline-4">
+<h4 id="org947afeb">Starting a thread</h4>
+<div class="outline-text-4" id="text-org947afeb">
+<p>
+worker함수 정의 &#x2013;&gt; for 구문으로 n개의 thread개체 할당 , 실행
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> threading
+<span style="font-weight: bold;">import</span> time, random
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">threadWorker</span>(i):
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"THread {} started"</span>.<span style="font-weight: bold;">format</span>(i))
+    <span style="font-weight: bold; font-style: italic;">sleeptime</span> = random.randint(1,10)
+    time.sleep(sleeptime)
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"thread {} finished executing"</span>.<span style="font-weight: bold;">format</span>(i))
+
+<span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(10):
+    <span style="font-weight: bold; font-style: italic;">thread</span> = threading.Thread(target=threadWorker, args=(i,))
+    thread.start()
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Active Threads:"</span>,  threading.<span style="font-weight: bold;">enumerate</span>())
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgc89957e" class="outline-4">
+<h4 id="orgc89957e">클래스에서 상속 받기</h4>
+<div class="outline-text-4" id="text-orgc89957e">
+<ol class="org-ol">
+<li>유저클래스가 thread class상속 받음</li>
+<li>Thread._<sub>init</sub>_<sub>(self)</sub> 호출로 thread 초기화</li>
+<li><p>
+쓰레드가 시작되면  호출될 run() 함수 정의
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">from</span> threading <span style="font-weight: bold;">import</span> Thread
+
+<span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">myWorkerThread</span>(Thread):
+    <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">__init__</span>(<span style="font-weight: bold;">self</span>):
+        <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"hello world"</span>)
+        Thread.__init__(<span style="font-weight: bold;">self</span>)
+
+        <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">run</span>(<span style="font-weight: bold;">self</span>):
+            <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Thread is running"</span>)
+
+<span style="font-weight: bold; font-style: italic;">myThread</span> = myWorkerThread()
+<span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Created my Thread obj"</span>)
+myThread.start()
+<span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Started my thread"</span>)
+myThread.join()
+<span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"My Thread finished"</span>)
+
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>myThread.strt() 가 호출되면 메쏘드 run()이 실행됨</li>
+<li>join()이 호출되면 쓰레드가 다 종료되야 그 아래 코드로 진행됨</li>
+</ul></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org8934ea6" class="outline-4">
+<h4 id="org8934ea6">Forking</h4>
+<div class="outline-text-4" id="text-org8934ea6">
+<ul class="org-ul">
+<li>주어진 프로세스의 복사본(child process)을 만드는것이 Fork</li>
+<li>새 프로세스는 새 주소를 할당 받고. 부모 프로세스와 같은 데이터와 코드를 갖는다</li>
+<li><p>
+새 프로세스는 새 PID를 받으며 부모와 독립적이다.
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> os
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">child</span>():
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Child Process pID= {}"</span>.<span style="font-weight: bold;">format</span>(os.getpid()))
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">parent</span>():
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Parent Process pID= {}"</span>.<span style="font-weight: bold;">format</span>(os.getpid()))
+    newRef = os.getpid()
+    <span style="font-weight: bold;">if</span> newRef == 0:
+        child()
+    <span style="font-weight: bold;">else</span>:
+        <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"We ar in the parent process and our child's PID ={}"</span>.<span style="font-weight: bold;">format</span>(newRef))
+parent()
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org8501808" class="outline-4">
+<h4 id="org8501808">Daemonizing a thread</h4>
+<div class="outline-text-4" id="text-org8501808">
+<ul class="org-ul">
+<li>프로그램이 멈출 때까지 계속 살아있음</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf53dd94" class="outline-3">
+<h3 id="orgf53dd94">Handling threads in Python</h3>
+<div class="outline-text-3" id="text-orgf53dd94">
+</div>
+<div id="outline-container-org67b9f25" class="outline-4">
+<h4 id="org67b9f25">Starting loads of threads</h4>
+<div class="outline-text-4" id="text-org67b9f25">
+<ul class="org-ul">
+<li>for 구문으로 여러개를 만든다.</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="orga4f6ebf"></a>Example<br />
+<div class="outline-text-5" id="text-orga4f6ebf">
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> threading
+<span style="font-weight: bold;">import</span> time, random
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">threadWorker</span>(i):
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"THread {} started"</span>.<span style="font-weight: bold;">format</span>(i))
+    <span style="font-weight: bold; font-style: italic;">sleeptime</span> = random.randint(1,10)
+    time.sleep(sleeptime)
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"thread {} finished executing"</span>.<span style="font-weight: bold;">format</span>(i))
+
+<span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(10):
+    <span style="font-weight: bold; font-style: italic;">thread</span> = threading.Thread(target=threadWorker, args=(i,))
+    thread.start()
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Active Threads:"</span>,  threading.<span style="font-weight: bold;">enumerate</span>())
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-orga02c88a" class="outline-4">
+<h4 id="orga02c88a">Getting the total number of active threads</h4>
+<div class="outline-text-4" id="text-orga02c88a">
+<ul class="org-ul">
+<li>살아있는 쓰레드 갯수 알아내기</li>
+</ul>
+</div>
+<ul class="org-ul">
+<li><a id="org4079d1f"></a>Example<br />
+<div class="outline-text-5" id="text-org4079d1f">
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> threading
+<span style="font-weight: bold;">import</span> time, random
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">myThread</span>(i):
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"THread {} started"</span>.<span style="font-weight: bold;">format</span>(i))
+    <span style="font-weight: bold; font-style: italic;">sleeptime</span> = random.randint(1,5)
+    time.sleep(sleeptime)
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"thread {} finished executing"</span>.<span style="font-weight: bold;">format</span>(i))
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">main</span>():
+    <span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(random.randint(2,5)):
+        <span style="font-weight: bold; font-style: italic;">thread</span> = threading.Thread(target=myThread, args=(i,))
+        thread.start()
+    time.sleep(4)
+    <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Total Number of Active THreads :{}"</span>.<span style="font-weight: bold;">format</span>(threading.active_count()))
+
+<span style="font-weight: bold;">if</span> <span style="font-weight: bold;">__name__</span>==<span style="font-style: italic;">'__main__'</span>:
+    main()
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div id="outline-container-org970418c" class="outline-4">
+<h4 id="org970418c">Getting the current thread</h4>
+<div class="outline-text-4" id="text-org970418c">
+<ul class="org-ul">
+<li><p>
+현재 돌고 있는 쓰레드 정보 얻기
+threading.current<sub>thread</sub>()
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> threading
+<span style="font-weight: bold;">import</span> time
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">threadTarget</span>():
+  <span style="font-weight: bold;">print</span>(<span style="font-style: italic;">"Current Thread: {}"</span>.<span style="font-weight: bold;">format</span>(threading.current_thread()))
+
+threads = []
+
+<span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(10):
+  <span style="font-weight: bold; font-style: italic;">thread</span> = threading.Thread(target=threadTarget)
+  thread.start()
+  threads.append(thread)
+
+<span style="font-weight: bold;">for</span> thread <span style="font-weight: bold;">in</span> threads:
+  thread.join()
+
+
+</pre>
+</div></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org8dfbc76" class="outline-2">
+<h2 id="org8dfbc76">Syncronization between Threads</h2>
+<div class="outline-text-2" id="text-org8dfbc76">
+</div>
+<div id="outline-container-orge26e9e0" class="outline-3">
+<h3 id="orge26e9e0">The dining</h3>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.1 (<a href="https://orgmode.org">Org</a> mode 9.5.2)</p>
+</div>
+</body>
+</html>

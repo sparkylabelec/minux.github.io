@@ -1,0 +1,302 @@
+#+TITLE: Concurreny Python
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+* Speed it up
+** What is Thread
+  - OS에 의해 스케쥴링 되는 인스트럭션의 스트림
+  - 프로세서가 할당하는 가장 작은 실행 단위
+  - 메모리사용을 서로 공유하지만 쓰레드 실행 순서는 어떻게 될지 모른다
+*** Types of Thread
+    - User-level thread: 사용자가 만들고 죽일 수 있는 쓰레드
+    - Kernel-level thread: OS가 관리  하는 것
+*** What is multithreading
+    - 하나의 프로세서가 여러 작업을 하는 것
+      작업간에 Blocking 되는 경우가 많다
+    - Threading 의 장점
+      + 메모리 사용에서 프로세서들 보다 가볍다
+      + 멀티쓰데드는 I/O Blocking 작업들에서 훌륭한다
+      + 자원을 공유하므로 쓰레드간 공유가 편하다
+    - Threading 의 단점
+      + Globa interpreter Lock  한계가 있다
+      + 자원공유에서 Race condition이 걸리지 않도록 주의해야 한다
+      + 멀티쓰레드에서 switching context 영향으로 성능이 떨어질 수 있다.
+** Process
+   - CPU의 코어에 해당.
+   - 하나의 프로세스는 메인 쓰레드가 있고 여러 sub-threadygw 만들 수 있다
+   - 각 프로세스는 각자 고유의 자원을 갖는다.
+   - 프로세스가 많아지면 Inter Process Communication(IPC) 문제가 발생 할 수 있다
+*** Properties of Processe
+    - PID, process group ID, user ID and group ID
+    - Enviroment, Working dirctory, Program instruction, Regiesters, Stack, Heap
+    - File descriptors, Signal Actions, Shared libraries, IPC
+*** 프로세스 의 장점
+    - 멀티코어에서 더 나은 성능
+    - CPU 능력이 필요한 작업에 적합
+    - GIL의 단점을 피할 수 있다
+    - 프로세스가 죽어도 전체 프로그램을 죽이지 않는다
+    - 
+*** 프로세스의 단점
+    - 프로세스간 자원 공유가 없다 - IPC로 구현해야  한다
+    - 메모리 사용량이 더 많다
+** Multi Processing
+*** GPU
+    - PyCUDA
+      + N'vidia's CUDA parallel computation API in Python
+    - OpenCL
+      + alternative pyCUDA
+      + Java, dotNet API are also available
+    - Theano
+      + C implementation
+      + Theano 로 가는 중간영역에서 파이썬이 쓰임
+    - 파이썬의 한계
+      + Global Inter Lock 현상
+    - Jython
+      + Java platform 에서 돌아갈수 있는 파이썬
+      + Java library 쓸 수 있다
+    - IronPython
+      + dotNet framework에서 돌아가게 만듬
+    - 
+
+* Parallelize it 
+**  Understanding concurrency
+   Concurrency 는 여러일을 동시에 , 병렬로 하는 것이다. 예상되는 능력이상을 하게 해주며 응용프로그램의 속도를 높여준다
+***  Propertyof concurrnet systems 
+    - Multiple actors
+      각각의 프로세스와 쓰레드들. 하나의 프로세스는 여러개의 쓰레드를 갖을 수 있다
+    - Shared Resource
+      메모리,디스크나 기타 actors들이 사용하는 자원들
+    - Rules
+      Concurrent System이 따라야 할 규칙들. 언제 actor들이 lock을 획득하고, 메모리에 접근하며 state를 수정 할수 있는지에대한 규칙이다
+
+** I/O Bottle necks
+   컴퓨터가 다양한 입출력을 대기하는 시간이 정보처리를 하는 것 보다 오래 걸리는 현상
+   #+BEGIN_SRC python :results output
+     import urllib.request
+     import time
+
+     t0 = time.time()
+     req = urllib.request.urlopen("http://www.example.com")
+     t1 = time.time()
+     print("Total Time to Fetch Page {} Seconds".format(t1-t0))
+   #+END_SRC
+
+   #+RESULTS:
+   : Total Time to Fetch Page 0.44725656509399414 Seconds
+   사이트 하나 의 시간은 0.5 초 정도이지만 수만개의 사이트 대상일 때는 시간이 많이 늘어난다
+   
+** System architecture styles 
+   - SISD::Single Instruction streams, Single Data streams
+   시스템으로 들어가는 하나의 스트림과 하나의 프로세싱 유닛이 사용된다
+   -SIMD::single intruction stream , multiple Data streams
+   멀티미디어 처리에 최적화,  데이터를 묶음 단위로 한번에 처리
+   - MISD::Multiple instruction streams, single Data stream
+     상업적인 실제 모델은 없다. 
+   - MIMD::Multi instruction streams, multiple data streams
+** Computer Memory architecture styles   
+   - UMA::Uniform Memory
+     공유메모리가 프로세싱 코어 수에 상관없이 같은 형태로 사용됨(코어와 메모리 거리에 상관없는구조)
+     + 모든 RAM은 동일한 엑세스 시간이 걸림
+     + 캐시가 고정적이다
+     + 하드웨어 디자인이 간단하다
+     + 메모리 버스가 1개 이므로 Scailing Prolem 이 생긴다.
+   - NUMA::Non-uniform Memory Access
+     프로세서와 메모리 거리에 따라 접근 속도가 다르다. 가까운것은 빠르다
+     + NUMA는 UMA보다 Scailable 하다
+     + 메모리접근속도가 비결정적이다.
+     + 다른 프로세서의 변화를 관찰해야 하므로 프로세서가 많이 사용되면 시간이 증가된다
+* Life of a Thread
+  - Thread Construcor의 구조
+    ~def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):~
+  - Thread State
+    + New Thread
+      쓰레드가 실행, 자원 할당 전, 그냥 인스턴스 상태
+    + Runnable
+      실행대기 상태, 자원을 할당 받음, 태스크 스케쥴러가 대시 시키는 상태
+    + Running
+      실행되고 있는 상태. 이 상태에서는 Kill 이나 not Running 상태 중 하나가 될 수 있음
+    + Not-Running 
+      I/O 요청, 다른쓰레드 충돌 같은 이유로 실행 중지 상태.
+    + Dead
+      자연사 하거나 사고사 하거나.
+** Python example of thread      
+  #+BEGIN_SRC python :results output
+  import threading
+  import time
+
+  def threadWorker():
+      print("My thread has entered 'Running Stat'")
+      time.sleep(5)
+      print("My thread is terminating")
+
+  myThread = threading.Thread(target=threadWorker)
+  myThread.start()
+  myThread.join()
+  print("My thread entered 'DEAD state'")
+#+END_SRC
+
+#+RESULTS:
+: My thread has entered 'Running Stat'
+: My thread is terminating
+: My thread entered 'DEAD state'
+- myThread = threading.Thread(target=threadWorker)
+  + Thread instance생성.
+  + 자원 할당이전
+- myThread.start()
+  + 자원 할당됨
+  + thread 의 run 함수가 호출되고 runnable 상태됨
+  + threadWorker안에 time.sleep()같은 대기 문구가 있으면 Not-Running 상태가 되고 다른 쓰레드가 스케쥴링됨
+  + time.sleep()이 끝나면 worker 프로세스가 끝나므로 Dead상태됨.
+** The Way of start a thread
+*** Starting a thread
+    worker함수 정의 --> for 구문으로 n개의 thread개체 할당 , 실행
+    #+BEGIN_SRC python :results output
+      import threading
+      import time, random
+
+      def threadWorker(i):
+          print("THread {} started".format(i))
+          sleeptime = random.randint(1,10)
+          time.sleep(sleeptime)
+          print("thread {} finished executing".format(i))
+
+      for i in range(10):
+          thread = threading.Thread(target=threadWorker, args=(i,))
+          thread.start()
+          print("Active Threads:",  threading.enumerate())
+    #+END_SRC
+*** 클래스에서 상속 받기
+    1. 유저클래스가 thread class상속 받음
+    2. Thread.__init__(self) 호출로 thread 초기화
+    3. 쓰레드가 시작되면  호출될 run() 함수 정의
+       #+BEGIN_SRC python :results output
+         from threading import Thread
+
+         class myWorkerThread(Thread):
+             def __init__(self):
+                 print("hello world")
+                 Thread.__init__(self)
+
+                 def run(self):
+                     print("Thread is running")
+
+         myThread = myWorkerThread()
+         print("Created my Thread obj")
+         myThread.start()
+         print("Started my thread")
+         myThread.join()
+         print("My Thread finished")
+
+       #+END_SRC
+
+       #+RESULTS:
+       : hello world
+       : Created my Thread obj
+       : Started my thread
+       : My Thread finished
+      
+       - myThread.strt() 가 호출되면 메쏘드 run()이 실행됨
+       - join()이 호출되면 쓰레드가 다 종료되야 그 아래 코드로 진행됨
+*** Forking
+    - 주어진 프로세스의 복사본(child process)을 만드는것이 Fork
+    - 새 프로세스는 새 주소를 할당 받고. 부모 프로세스와 같은 데이터와 코드를 갖는다
+    - 새 프로세스는 새 PID를 받으며 부모와 독립적이다.
+      #+BEGIN_SRC python :results output
+        import os
+        def child():
+            print("Child Process pID= {}".format(os.getpid()))
+    
+        def parent():
+            print("Parent Process pID= {}".format(os.getpid()))
+            newRef = os.getpid()
+            if newRef == 0:
+                child()
+            else:
+                print("We ar in the parent process and our child's PID ={}".format(newRef))
+        parent()
+      #+END_SRC
+
+      #+RESULTS:
+      : Parent Process pID= 18234
+      : Child Process pID= 18234
+*** Daemonizing a thread
+    - 프로그램이 멈출 때까지 계속 살아있음
+** Handling threads in Python
+*** Starting loads of threads
+    - for 구문으로 여러개를 만든다.
+**** Example
+    #+BEGIN_SRC python :results output
+      import threading
+      import time, random
+
+      def threadWorker(i):
+          print("THread {} started".format(i))
+          sleeptime = random.randint(1,10)
+          time.sleep(sleeptime)
+          print("thread {} finished executing".format(i))
+
+      for i in range(10):
+          thread = threading.Thread(target=threadWorker, args=(i,))
+          thread.start()
+          print("Active Threads:",  threading.enumerate())
+    #+END_SRC
+*** Getting the total number of active threads
+    - 살아있는 쓰레드 갯수 알아내기
+**** Example
+     #+BEGIN_SRC python :results output
+       import threading
+       import time, random
+
+       def myThread(i):
+           print("THread {} started".format(i))
+           sleeptime = random.randint(1,5)
+           time.sleep(sleeptime)
+           print("thread {} finished executing".format(i))
+
+       def main():
+           for i in range(random.randint(2,5)):
+               thread = threading.Thread(target=myThread, args=(i,))
+               thread.start()
+           time.sleep(4)
+           print("Total Number of Active THreads :{}".format(threading.active_count()))
+
+       if __name__=='__main__':
+           main()
+     #+END_SRC
+*** Getting the current thread
+    - 현재 돌고 있는 쓰레드 정보 얻기
+      threading.current_thread()
+      #+BEGIN_SRC python :results output
+        import threading
+        import time
+
+        def threadTarget():
+          print("Current Thread: {}".format(threading.current_thread()))
+
+        threads = []
+
+        for i in range(10):
+          thread = threading.Thread(target=threadTarget)
+          thread.start()
+          threads.append(thread)
+
+        for thread in threads:
+          thread.join()
+
+
+      #+END_SRC
+
+      #+RESULTS:
+      #+begin_example
+      Current Thread: <Thread(Thread-1, started 140447810893568)>
+      Current Thread: <Thread(Thread-2, started 140447800710912)>
+      Current Thread: <Thread(Thread-3, started 140447800710912)>
+      Current Thread: <Thread(Thread-4, started 140447800710912)>
+      Current Thread: <Thread(Thread-5, started 140447800710912)>
+      Current Thread: <Thread(Thread-6, started 140447800710912)>
+      Current Thread: <Thread(Thread-7, started 140447800710912)>
+      Current Thread: <Thread(Thread-8, started 140447800710912)>
+      Current Thread: <Thread(Thread-9, started 140447800710912)>
+      Current Thread: <Thread(Thread-10, started 140447800710912)>
+      #+end_example
+* Syncronization between Threads
+** The dining
+
