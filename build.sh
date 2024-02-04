@@ -1,2 +1,2 @@
 #!/bin/sh
-emacs -Q --script build-site.el
+emacs-nox -Q --script build-site.el
