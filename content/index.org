@@ -6,6 +6,7 @@ This is an *example* of a _website_ written with [[https://orgmode.org][Org Mode
 
 Here is a link to my [[./Emacs.org][Emacs configuration]].
 
+My name is minwook han
 * Links
 
 - [[https://systemcrafters.net][System Crafters Official Site]]
