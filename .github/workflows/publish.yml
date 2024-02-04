@@ -1,4 +1,4 @@
-name: Publish to GitHub Pages
+name: Publish to GitHub Pages.
 
 on:
   push:
@@ -11,7 +11,8 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v3
-
+        with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Emacs
         run: sudo apt install emacs-nox --yes
 
