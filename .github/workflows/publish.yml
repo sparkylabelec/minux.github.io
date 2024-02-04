@@ -8,6 +8,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+        contents: write
     steps:
       - name: Check out
         uses: actions/checkout@v3
@@ -16,8 +18,6 @@ jobs:
 
       - name: Build the site
         run: ./build.sh
-        permissions:
-        contents: write
 
       - name: Publish generated content to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.4
