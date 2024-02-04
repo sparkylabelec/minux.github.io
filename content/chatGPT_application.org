@@ -1,0 +1,44 @@
+:PROPERTIES:
+:ID:       4131562b-d6de-4905-8073-2f77a49f6ef3
+:END:
+#+title: #+title: chatGPT_application
+
+
+* AI 활용분야
+
+** Text
+6. edeg에 PDF 요약 기능
+4. 생산성을 위한 chatGTP 사용하기
+** Music
+** Visual
+1. 디자이너를 위한6 가지 AI tools
+2. 손글씨
+3. 영상제작 자동화
+4. 워터마크 지우기
+5. 캐릭터 포즈 그리기 : ControlNet
+6. 얼굴 공개 안하고 유툽(딥페이크)
+** Sound
+1. 좋아하는 곡 찾아주기:  Maroofy
+2. AI로 음악만들기
+3. 셀럽 목소리 만들기
+** Automation work
+1. 네트워크 장비에 사용된 AI
+** Humanity Problems
+1. ai로 사상교육효과 측정
+2. chatGPT에 대한 노엄촘스키 반응
+3. 범죄 도구로 쓰이는 AI
+4. 쿠팡 물류 자동화
+5. 팀쿡이 걱정하고 있는 AI 미래
+6. 파파고 번역상
+7. 국뽕 티비 활용
+8. ai와 사랑 공감 문제
+9. 보스턴 다이나믹스
+** Tools
+1. ai tool 검색 : aiTopTools
+2. Neeva 검색 엔진
+   chatGTP 단점 보완
+3. 하던 작업 다시 돌리기 :rewind
+4. 프롬프트 검색 사이트
+5. chatGTP 확장 프로그램
+6. chatGTP 거짓말 못하게 하기
+7. GTP 학습원리
